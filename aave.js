@@ -9,6 +9,9 @@ const web3 = new Web3("https://ethereum.publicnode.com");
 // HTTP PROVIDER FOR AVALANCHE MAIINET
 //const web3 = new Web3("https://rpc.ankr.com/avalanche");
 
+//standard erc20 abi
+const erc20ABI = require('./erc-20-standard-abi.json'); // ABI for ERC20
+
 // aaave protocol v2 lending pool abi for ETHEREUM mainnet
 const lendingPoolABI = require('./aave-abi-lending-pool-v2.json'); // ABI for AAVE v2 Lending Pool
 // aaave protocol v2 lending pool abi for POLYGON mainnet
@@ -195,22 +198,67 @@ return [depositAPY, variableBorrowAPY, stableBorrowAPY];
 
 }
 
-async function getTotalBorrowSupply() {
+async function getTotalSupply() {
 
   const reserves = await aaveContract.methods.getAllATokens().call();
-  first_Reserve_address = reserves[0].tokenAddress;
-  result =  reserves[0].scaledTotalSupply();
-  console.log("Result: " + result);
+  //console.log("Reserves: ", reserves);
+  for (const reserve of reserves) {
+    const ATokenContract = new web3.eth.Contract(erc20ABI, reserve.tokenAddress);
+    const totalSupply = await ATokenContract.methods.totalSupply().call();
+    console.log("Reserve: ", reserve.symbol);
+    console.log("Total Supply: ", totalSupply);
+    //const reserveData = await aaveContract.methods.getReserveData(reserve.tokenAddress).call();
+    //console.log("Reserve Data: ", reserveData);
+
+  }
+
+}
+
+async function getTotalBorrow() {
+  
+    const reserves = await aaveContract.methods.getAllReservesTokens().call();
+    //console.log("Reserves: ", reserves);
+    for (const reserve of reserves) {
+      const reserveData = await LendingPool.methods.getReserveData(reserve.tokenAddress).call();
+      //console.log("Reserve: ", reserve.symbol);
+      console.log("reserveData", reserveData);
+      const stableDebtTokenContract = new web3.eth.Contract(erc20ABI, reserveData.stableDebtTokenAddress);
+     const stableDebtTotalSupply = await stableDebtTokenContract.methods.totalSupply().call();
+      console.log("stableDebtTokenContract Total Supply", stableDebtTotalSupply);
+      const variableDebtTokenContract = new web3.eth.Contract(erc20ABI, reserveData.variableDebtTokenAddress);
+      const variableDebtTotalSupply = await variableDebtTokenContract.methods.totalSupply().call();
+      console.log("variableDebtTokenContract Total Supply", variableDebtTotalSupply);
+      const totalBorrow = Number(stableDebtTotalSupply) + Number(variableDebtTotalSupply);      
+      console.log("Total Borrow: ", totalBorrow);
+  
+    }
+   
+}
+
+async function getTotalBorrowSecondWay() {
+  
+  const reserves = await aaveContract.methods.getAllReservesTokens().call();
+  //console.log("Reserves: ", reserves);
+  for (const reserve of reserves) {
+    const reserveData = await aaveContract.methods.getReserveData(reserve.tokenAddress).call();
+    console.log("Reserve: ", reserve.symbol);
+    console.log("reserveData", reserveData);
+    
+
+  }
+
 }
 
 
   async function main(){
       //const result = await getReserveData(assetAddress);
-      //getTotalBorrowSupply();
+      //getTotalSupply(); // it is working fine
+      //getTotalBorrow(); // it is working fine
+      getTotalBorrowSecondWay(); // it is working fine
      //const reservesData = await aaveContract.methods.getAllReservesTokens().call();
      //console.log(reservesData);
-    //getSupplyBorrowAssets();
-    getAPYofEachAsset();
+    //getSupplyBorrowAssets(); // it is working fine
+    //getAPYofEachAsset();   // it is working fine
       //  getAPYforOneAsset(usdtAddress);
       //  getAPYforOneAsset(daiAddress);
 
