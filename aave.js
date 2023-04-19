@@ -59,7 +59,7 @@ const LendingPool = new web3.eth.Contract(lendingPoolABI, lendingPoolAddress);
 
 const priceFeed = new web3.eth.Contract(ChainlinkABI, address_Chainlink_Price_Feed);
 
-
+// TODO - This function is not working
 async function getTVL() {
   try {
     const reservesData = await aaveContract.methods.getAllReservesTokens().call();
@@ -254,10 +254,10 @@ async function getTotalBorrowSecondWay() {
       //const result = await getReserveData(assetAddress);
       //getTotalSupply(); // it is working fine
       //getTotalBorrow(); // it is working fine
-      getTotalBorrowSecondWay(); // it is working fine
+      //getTotalBorrowSecondWay(); // it is working fine
      //const reservesData = await aaveContract.methods.getAllReservesTokens().call();
      //console.log(reservesData);
-    //getSupplyBorrowAssets(); // it is working fine
+    getSupplyBorrowAssets(); // it is working fine
     //getAPYofEachAsset();   // it is working fine
       //  getAPYforOneAsset(usdtAddress);
       //  getAPYforOneAsset(daiAddress);

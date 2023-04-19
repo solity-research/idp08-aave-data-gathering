@@ -6,6 +6,7 @@ const assetAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"; // DAI
 
 const compoundContract = new web3.eth.Contract(compoundABI, compoundAddress);
 
+//  TODO - This is not working
 async function getTVL() {
   try {
     const cToken = await compoundContract.methods.cToken(assetAddress).call();
