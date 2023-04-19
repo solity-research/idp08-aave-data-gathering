@@ -1,8 +1,6 @@
 # AAVE Data Gathering
 
-## Author
 
-Cem
 ## Installation
 
 1. Clone the repository
