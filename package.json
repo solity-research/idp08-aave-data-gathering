@@ -1,0 +1,14 @@
+{
+  "name": "idp08-aave-data-gathering",
+  "version": "1.0.0",
+  "description": "1. Clone the repository\r 2. `npm i web3`\r 3. `node aave.js`",
+  "main": "aave.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "^4.0.1"
+  }
+}

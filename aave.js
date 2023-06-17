@@ -1,9 +1,9 @@
-const Web3 = require("web3")
+const {Web3} = require("web3")
  
 // BELOW CODES WILL BE RESTRUCTURED TO BE MORE READABLE
 
 //HTTP PROVIDER FOR ETHEREUM MAINNET
-const web3 = new Web3("https://ethereum.publicnode.com");
+const web3 = new Web3("https://eth.public-rpc.com");
 // HTTP PROVIDER FOR POLYGON MAIINET
 //const web3 = new Web3("https://rpc.ankr.com/polygon");
 // HTTP PROVIDER FOR AVALANCHE MAIINET
@@ -84,6 +84,7 @@ async function getAPYofEachAsset() {
     const promises = reservesData.map(async (reserveData) => {
     //console.log("reserve Data", reserveData);
     const apyData =  await getAPYforOneAsset(reserveData.tokenAddress);
+    //console.log(apyData);
     const [depositAPY, variableBorrowAPY, stableBorrowAPY] = apyData;
     console.log("------------------------------------------------");
     console.log(reserveData.symbol, depositAPY, variableBorrowAPY, stableBorrowAPY);  
@@ -113,11 +114,11 @@ async function getAPYforOneAsset(_assetAddress) {
  try {
   const reserveData = await LendingPool.methods.getReserveData(_assetAddress).call();
   //console.log("Reserve Data",reserveData);
-  const liquidityIndex = reserveData.liquidityIndex;
-  const variableBorrowIndex = reserveData.variableBorrowIndex;
-  const currentLiquidityRate = reserveData.currentLiquidityRate;
-  const currentVariableBorrowRate = reserveData.currentVariableBorrowRate;
-  const currentStableBorrowRate = reserveData.currentStableBorrowRate;
+  const liquidityIndex = Number(reserveData.liquidityIndex);
+  const variableBorrowIndex = Number(reserveData.variableBorrowIndex);
+  const currentLiquidityRate = Number(reserveData.currentLiquidityRate);
+  const currentVariableBorrowRate = Number(reserveData.currentVariableBorrowRate);
+  const currentStableBorrowRate = Number(reserveData.currentStableBorrowRate);
   // console.log("------------------------------------------------");
   // console.log(currentLiquidityRate, currentVariableBorrowRate, currentStableBorrowRate);
   // console.log("------------------------------------------------");
@@ -138,9 +139,9 @@ const stableBorrowAPR = currentStableBorrowRate/RAY;
 const depositAPY = (((1 + (depositAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1)*100;
 const variableBorrowAPY = (((1 + (variableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1)*100;
 const stableBorrowAPY = (((1 + (stableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1)*100;
-// console.log("Deposit APY: " + depositAPY);
-// console.log("Variable Borrow APY: " + variableBorrowAPY);
-// console.log("Stable Borrow APY: " + stableBorrowAPY);
+console.log("Deposit APY: " + depositAPY);
+console.log("Variable Borrow APY: " + variableBorrowAPY);
+console.log("Stable Borrow APY: " + stableBorrowAPY);
 return [depositAPY, variableBorrowAPY, stableBorrowAPY];
  
 } catch (error) {
@@ -257,8 +258,8 @@ async function getTotalBorrowSecondWay() {
       //getTotalBorrowSecondWay(); // it is working fine
      //const reservesData = await aaveContract.methods.getAllReservesTokens().call();
      //console.log(reservesData);
-    getSupplyBorrowAssets(); // it is working fine
-    //getAPYofEachAsset();   // it is working fine
+    //getSupplyBorrowAssets(); // it is working fine
+    getAPYofEachAsset();   // it is working fine
       //  getAPYforOneAsset(usdtAddress);
       //  getAPYforOneAsset(daiAddress);
 
